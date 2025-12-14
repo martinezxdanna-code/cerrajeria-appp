@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <!-- PARA QUE SE VEA BIEN EN CELULAR -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Cerrajería</title>
+
+  <!-- CONECTAR EL MANIFEST -->
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 15px;
+      max-width: 480px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #333;
+      color: white;
+      border: none;
+    }
+
+    li {
+      background: white;
+      padding: 10px;
+      margin: 6px 0;
+      border-radius: 6px;
+      list-style: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>🔐 Cerrajería</h1>
+
+<input id="cliente" placeholder="Nombre del cliente">
+<input id="telefono" placeholder="Teléfono" inputmode="numeric">
+
+<select id="servicio">
+  <option value="15000">Apertura de puerta</option>
+  <option value="30000">Cambio de cerradura</option>
+  <option value="10000">Copia de llave</option>
+</select>
+
+<button onclick="agregar()">Registrar servicio</button>
+
+<ul id="lista"></ul>
+
+<script>
+  // REGISTRAR SERVICE WORKER (APP INSTALABLE)
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js");
+  }
+
+  // DATOS GUARDADOS
+  let trabajos = JSON.parse(localStorage.getItem("trabajos")) || [];
+  mostrar();
+
+  function agregar() {
+    let cliente = document.getElementById("cliente").value;
+    let telefono = document.getElementById("telefono").value;
+    let servicio = document.getElementById("servicio");
+
+    if (cliente === "" || telefono === "") {
+      alert("Completa todos los campos");
+      return;
+    }
+
+    let trabajo = {
+      cliente: cliente,
+      telefono: telefono,
+      servicio: servicio.options[servicio.selectedIndex].text,
+      precio: servicio.value,
+      fecha: new Date().toLocaleDateString()
+    };
+
+    trabajos.push(trabajo);
+    localStorage.setItem("trabajos", JSON.stringify(trabajos));
+
+    document.getElementById("cliente").value = "";
+    document.getElementById("telefono").value = "";
+
+    mostrar();
+  }
+
+  function mostrar() {
+    let lista = document.getElementById("lista");
+    lista.innerHTML = "";
+
+    trabajos.forEach(t => {
+      lista.innerHTML += `
+        <li>
+          ${t.fecha}<br>
+          <strong>${t.cliente}</strong><br>
+          ${t.servicio} – $${t.precio}
+        </li>
+      `;
+    });
+  }
+</script>
+
+</body>
+</html>
