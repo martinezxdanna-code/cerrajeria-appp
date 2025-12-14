@@ -2,29 +2,51 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-
-  <!-- PARA QUE SE VEA BIEN EN CELULAR -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Cerrajería</title>
-
-  <!-- CONECTAR EL MANIFEST -->
-  <link rel="manifest" href="manifest.json">
+  <title>Cerrajería Valmar</title>
 
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f2f2f2;
-      padding: 15px;
       max-width: 480px;
       margin: auto;
+      padding: 15px;
     }
 
-    h1 {
+    /* PORTADA */
+    #portada {
       text-align: center;
+      margin-top: 120px;
     }
 
-    input, select, button {
+    #portada h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    #portada p {
+      font-size: 16px;
+      color: #555;
+    }
+
+    #portada button {
+      margin-top: 25px;
+      padding: 15px;
+      font-size: 18px;
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      background: #333;
+      color: white;
+    }
+
+    /* APP */
+    #app {
+      display: none;
+    }
+
+    input, button {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
@@ -38,88 +60,48 @@
       color: white;
       border: none;
     }
-
-    li {
-      background: white;
-      padding: 10px;
-      margin: 6px 0;
-      border-radius: 6px;
-      list-style: none;
-      font-size: 14px;
-    }
   </style>
 </head>
 
 <body>
 
-<h1>🔐 Cerrajería</h1>
+<!-- PORTADA -->
+<div id="portada">
+  <h1>🔐 Cerrajería Valmar</h1>
+  <p>Servicios rápidos y seguros</p>
+  <button onclick="entrar()">Entrar</button>
+</div>
 
-<input id="cliente" placeholder="Nombre del cliente">
-<input id="telefono" placeholder="Teléfono" inputmode="numeric">
+<!-- PANTALLA SIGUIENTE -->
+<div id="app">
+  <h2>Datos del cliente</h2>
 
-<select id="servicio">
-  <option value="50000">Apertura de puerta</option>
-  <option value="120000">Cambio de cerradura</option>
-  <option value="10000">Copia de llave</option>
-</select>
+  <input id="nombre" placeholder="Nombre del cliente">
+  <input id="telefono" placeholder="Número de teléfono" inputmode="numeric">
 
-<button onclick="agregar()">Registrar servicio</button>
-
-<ul id="lista"></ul>
+  <button onclick="guardar()">Continuar</button>
+</div>
 
 <script>
-  // REGISTRAR SERVICE WORKER (APP INSTALABLE)
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js");
+  function entrar() {
+    document.getElementById("portada").style.display = "none";
+    document.getElementById("app").style.display = "block";
   }
 
-  // DATOS GUARDADOS
-  let trabajos = JSON.parse(localStorage.getItem("trabajos")) || [];
-  mostrar();
-
-  function agregar() {
-    let cliente = document.getElementById("cliente").value;
+  function guardar() {
+    let nombre = document.getElementById("nombre").value;
     let telefono = document.getElementById("telefono").value;
-    let servicio = document.getElementById("servicio");
 
-    if (cliente === "" || telefono === "") {
-      alert("Completa todos los campos");
+    if (nombre === "" || telefono === "") {
+      alert("Por favor llena todos los campos");
       return;
     }
 
-    let trabajo = {
-      cliente: cliente,
-      telefono: telefono,
-      servicio: servicio.options[servicio.selectedIndex].text,
-      precio: servicio.value,
-      fecha: new Date().toLocaleDateString()
-    };
-
-    trabajos.push(trabajo);
-    localStorage.setItem("trabajos", JSON.stringify(trabajos));
-
-    document.getElementById("cliente").value = "";
-    document.getElementById("telefono").value = "";
-
-    mostrar();
-  }
-
-  function mostrar() {
-    let lista = document.getElementById("lista");
-    lista.innerHTML = "";
-
-    trabajos.forEach(t => {
-      lista.innerHTML += `
-        <li>
-          ${t.fecha}<br>
-          <strong>${t.cliente}</strong><br>
-          ${t.servicio} – $${t.precio}
-        </li>
-      `;
-    });
+    alert("Datos guardados:\n" + nombre + " - " + telefono);
   }
 </script>
 
 </body>
 </html>
+
 
